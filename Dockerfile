@@ -10,18 +10,19 @@ RUN dpkg --add-architecture i386 && \
         locale-gen --no-purge en_US.UTF-8 && \
     apt-get clean && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
+# General vars
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
-ENV APP_DIR="/app"
-ENV STEAMCMD_DIR="${APP_DIR}/Steam/steamcmd"
+ENV STEAMCMD_DIR="/steam/steamcmd"
+ENV OUTPUT_DIR="/output"
 
 # Set up user environment
 RUN groupadd -r abc && \
-    useradd -d ${APP_DIR} -r -g abc abc && \
-    mkdir -p ${STEAMCMD_DIR} && \
-    chown -R abc:abc ${APP_DIR}
+    useradd -d ${STEAMCMD_DIR} -r -g abc abc && \
+    mkdir -p ${STEAMCMD_DIR} ${OUTPUT_DIR} && \
+    chown -R abc:abc ${STEAMCMD_DIR} ${OUTPUT_DIR}
 
 USER abc
-WORKDIR ${APP_DIR}
+WORKDIR ${STEAMCMD_DIR}
 
 # Download and update steamcmd
 RUN wget -qO- http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar xz -C ${STEAMCMD_DIR} && \
